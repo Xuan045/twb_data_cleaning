@@ -1,0 +1,27 @@
+Value counts for NATIVE_COMBINE:
+NATIVE_COMBINE
+Holo                                         157997
+Hakka                                         23401
+Holo/Hakka                                    13559
+Holo/Southern China                            7939
+Holo/Northern China                            7373
+Southern China                                 6235
+Northern China                                 5848
+Southern China/Northern China                  2841
+Hakka/Southern China                           1908
+Hakka/Northern China                           1507
+Holo/Other China                                364
+Holo/Other                                      251
+Other                                           181
+Hakka/Other China                               118
+Northern China/Other China                      115
+Southern China/Other China                       81
+Holo/Southern China/Northern China               72
+Hakka/Other                                      57
+Other China                                      55
+Southern China/Other                             34
+Northern China/Other                             25
+Hakka/Southern China/Northern China              17
+Southern China/Northern China/Other China         5
+Other China/Other                                 1
+Holo/Southern China/Other China                   1

@@ -1,0 +1,7 @@
+# Individual ancestry files
+twb_ancestry/duplicated_origin.csv
+twb_ancestry/processed_origin.csv
+
+# Phenotype files
+twb_phenotype_cleaning/survey/full_df_survey.csv
+twb_phenotype_cleaning/lab_test/full_df_lab.csv
