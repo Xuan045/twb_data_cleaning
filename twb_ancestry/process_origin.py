@@ -1,8 +1,8 @@
 import pandas as pd
 
 # File directory
-file_dir = '/Volumes/Transcend/twb_survey_lab/'
-out_dir = '/Users/xuanchou/Documents/Github/twb_survey_cleaning/twb_ancestry/'
+file_dir = '/staging/reserve/jacobhsu/TWB/TWBR11106-05/Phenotypes_TX/twb_release_data/'
+out_dir = '/staging/reserve/jacobhsu/TWB/TWBR11106-05/Phenotypes_TX/twb_data_cleaning/twb_ancestry/'
 
 # Load ID information
 lab_info_df = pd.read_csv(f'{file_dir}lab_info.csv')
@@ -33,9 +33,8 @@ places_dict = {
 
 # Define the broader categorization by regions with provinces grouped into North China and South China divided by the Yangtze River
 province_categories_yangtze = {
-    "Northern China": ["Shanxi", "Hebei", "Shandong", "Henan", "Jiangsu", "Anhui", "Hubei", "Sichuan", "Chongqing", "Shaanxi", "Gansu", "Qinghai", "Ningxia", "Xinjiang", "Tianjin", "Beijing", "Liaoning", "Jilin", "Heilongjiang", "Inner Mongolia", "Liaobei"],
-    "Southern China": ["Zhejiang", "Fujian", "Jiangxi", "Shanghai", "Hunan", "Guangdong", "Guangxi", "Hainan", "Guizhou", "Yunnan", "Tibet"],
-    "Other China": ["Andong", "Hejiang", "Xikang", "Songjiang", "Suiyuan", "Chahar", "Nenjiang", "Mongolia", "Rehe", "Xing'an"]
+    "Northern Chinese": ["Shanxi", "Hebei", "Shandong", "Henan", "Jiangsu", "Anhui", "Hubei", "Sichuan", "Shaanxi", "Gansu", "Qinghai", "Ningxia", "Xinjiang", "Tianjin", "Beijing", "Liaoning", "Jilin", "Heilongjiang", "Inner Mongolia", "Liaobei", "Andong", "Songjiang", "Suiyuan", "Chahar", "Nenjiang", "Mongolia", "Rehe", "Xing'an"],
+    "Southern Chinese": ["Zhejiang", "Fujian", "Jiangxi", "Hunan", "Guangdong", "Guangxi", "Hainan", "Guizhou", "Yunnan", "Tibet", "Hejiang", "Xikang"]
 }
 
 # Reverse lookup dictionary to find the category of a province
@@ -46,7 +45,7 @@ def process_origin(row, origin_prefix):
     origin_mapping = {
         'F': 'Holo',
         'H': 'Hakka',
-        'CHINA': 'China',
+        'CHINA': 'Chinese',
         'AB': 'Aborigine',
         'O': 'Other'
     }
@@ -71,26 +70,26 @@ def process_origin(row, origin_prefix):
         for col in other_description_cols:
             if pd.notna(row[col]):
                 descriptions.append(str(row[col]))
-    elif ancestry == 'China':
+    elif ancestry == 'Chinese':
         regions = []
         if pd.notna(row[origin_prefix + '_CHINA_1']):
             place_code = int(row[origin_prefix + '_CHINA_1'])
             china_descriptions_1 = places_dict.get(place_code, str(place_code))
-            regions.append(province_to_category.get(china_descriptions_1, 'Undefined China'))
+            regions.append(province_to_category.get(china_descriptions_1, 'Undefined Chinese'))
 
         if pd.notna(row[origin_prefix + '_CHINA_2']):
             place_code = int(row[origin_prefix + '_CHINA_2'])
             china_descriptions_2 = places_dict.get(place_code, str(place_code))
-            regions.append(province_to_category.get(china_descriptions_2, 'Undefined China'))
+            regions.append(province_to_category.get(china_descriptions_2, 'Undefined Chinese'))
 
         # Remove duplicates and sort the regions
-        regions = sorted(set(regions), key=lambda x: ['Southern China', 'Northern China', 'Other China'].index(x))
+        regions = sorted(set(regions), key=lambda x: ['Southern Chinese', 'Northern Chinese'].index(x))
         
         # Join regions if there are multiple
         if regions:
             china_region = '/'.join(regions)
         else:
-            china_region = 'Other China'
+            china_region = 'Undefined Chinese'
 
         ancestry = china_region
 
@@ -123,8 +122,8 @@ def process_dataframe(df):
 
 # Function to combine native information
 def combine_native_info(mom_native, fa_native):
-    priority_order = ['Holo', 'Hakka', 'Aborigine', 'Southern China', 'Southern China/Northern China', 'Southern China/Other China', 
-                      'Northern China', 'Northern China/Other China', 'Other China', 'Other']
+    priority_order = ['Holo', 'Hakka', 'Aborigine', 'Southern Chinese', 'Southern Chinese/Northern Chinese', 'Southern Chinese/Undefined Chinese', 
+                      'Northern Chinese', 'Northern Chinese/Undefined Chinese', 'Undefined Chinese', 'Other']
     if mom_native == fa_native:
         return mom_native
     else:
